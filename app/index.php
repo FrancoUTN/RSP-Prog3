@@ -12,6 +12,7 @@ require_once './middlewares/AutentificadorJWT.php';
 require_once './middlewares/Verificadora.php';
 require_once './controllers/UsuarioController.php';
 require_once './controllers/CriptomonedaController.php';
+require_once './controllers/VentaController.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -79,6 +80,23 @@ $app->group('/criptomonedas', function (RouteCollectorProxy $group) {
             ->add(\Verificadora::class . ':VerificarAdmin');
 
     $group->put('/{id}', \CriptomonedaController::class . ':ModificarUno')
+            ->add(\Verificadora::class . ':VerificarAdmin');
+});
+
+$app->group('/ventas', function (RouteCollectorProxy $group) {
+
+    $group->get('/{id}', \VentaController::class . ':TraerUno')
+            ->add(\Verificadora::class . ':VerificarRegistro');
+
+    $group->get('[/]', \VentaController::class . ':TraerTodos');    
+
+    $group->post('[/]', \VentaController::class . ':CargarUno')
+            ->add(\Verificadora::class . ':VerificarRegistro');
+
+    $group->delete('/{id}', \VentaController::class . ':BorrarUno')
+            ->add(\Verificadora::class . ':VerificarAdmin');
+
+    $group->put('/{id}', \VentaController::class . ':ModificarUno')
             ->add(\Verificadora::class . ':VerificarAdmin');
 });
 

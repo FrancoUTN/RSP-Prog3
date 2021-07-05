@@ -32,10 +32,10 @@ class UsuarioController implements IApiUsable
     $usr = $args['usuario'];
 
     // Buscamos por primary key
-    // $usuario = Usuario::find($usr);
+    $usuario = Usuario::find($usr);
 
     // Buscamos por attr usuario
-    $usuario = Usuario::where('usuario', $usr)->first();
+    // $usuario = Usuario::where('usuario', $usr)->first();
 
     $payload = json_encode($usuario);
 
