@@ -81,8 +81,54 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
-  public function TraerAlemanas($request, $response, $args)
-  {
+  public function TraerNac($request, $response, $args)
+  {    
+    $nacionalidad = $args["nacionalidad"];
+
+    $ventas = array();
+
+    $lista = Venta::all();
+
+    foreach ($lista as $venta)
+    {
+      $criptomoneda = Criptomoneda::find($venta->id_criptomoneda);
+
+      if ($criptomoneda->nacionalidad == $nacionalidad)
+        $ventas[] = $venta;
+    }
+
+    $payload = json_encode($ventas);
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function TraerPorNombreCripto($request, $response, $args)
+  {    
+    $nombre = $args["nombre"];
+
+    $usuarios = array();
+
+    $lista = Venta::all();
+
+    foreach ($lista as $venta)
+    {
+      $criptomoneda = Criptomoneda::find($venta->id_criptomoneda);
+
+      if ($criptomoneda->nombre == $nombre)
+      {        
+        $usuario = Usuario::find($venta->id_usuario);
+
+        $usuarios[] = $usuario;        
+      }
+    }
+
+    $payload = json_encode($usuarios);
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
   }
 
   public function ModificarUno($request, $response, $args)

@@ -88,7 +88,13 @@ $app->group('/ventas', function (RouteCollectorProxy $group) {
     $group->get('/{id}', \VentaController::class . ':TraerUno')
             ->add(\Verificadora::class . ':VerificarRegistro');
 
-    $group->get('[/]', \VentaController::class . ':TraerTodos');    
+    $group->get('[/]', \VentaController::class . ':TraerTodos');
+
+    $group->get('/nacionalidad/{nacionalidad}', \VentaController::class . ':TraerNac')
+            ->add(\Verificadora::class . ':VerificarAdmin');
+
+    $group->get('/nombre/{nombre}', \VentaController::class . ':TraerPorNombreCripto')
+            ->add(\Verificadora::class . ':VerificarAdmin');
 
     $group->post('[/]', \VentaController::class . ':CargarUno')
             ->add(\Verificadora::class . ':VerificarRegistro');
