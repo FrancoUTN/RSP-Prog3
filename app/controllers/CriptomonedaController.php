@@ -76,7 +76,6 @@ class CriptomonedaController implements IApiUsable
     $payload = json_encode($lista);
 
     $response->getBody()->write($payload);
-    // $response->getBody()->write($nacionalidad);
 
     return $response->withHeader('Content-Type', 'application/json');
   }

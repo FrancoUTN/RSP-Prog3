@@ -52,7 +52,7 @@ class UsuarioController implements IApiUsable
     $payload = json_encode($lista);
 
     $response->getBody()->write($payload);
-    
+
     return $response->withHeader('Content-Type', 'application/json');
   }
 
@@ -95,5 +95,44 @@ class UsuarioController implements IApiUsable
     $response->getBody()->write($payload);
     return $response
       ->withHeader('Content-Type', 'application/json');
+  }
+  
+  public function VerificarUno($request, $response)
+  {
+    $parsedBody = $request->getParsedBody();
+        
+    if (isset($parsedBody["mail"]) && isset($parsedBody["tipo"]) && isset($parsedBody["clave"]))
+    {
+      $mail = $parsedBody["mail"];
+      $tipo = $parsedBody["tipo"];
+      $clave = $parsedBody["clave"];
+      
+      $lista = Usuario::all();    
+
+      foreach ($lista as $usuario)
+          if ($usuario->mail == $mail)
+              if ($usuario->tipo == $tipo)
+                  if ($usuario->clave == $clave)
+                  {
+                      $data = array("tipo" => $usuario->tipo);                    
+                      $payload = json_encode($data);
+
+                      $response->getBody()->write($payload);
+
+                      return $response
+                              ->withHeader('Content-Type', 'application/json')
+                              ->withStatus(200);
+                  }
+    }
+
+    $data = array("mensaje" => "ERROR. Mail, tipo, o clave incorrectos.");
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+
+    return $response
+      ->withHeader('Content-Type', 'application/json')
+      ->withStatus(403);
   }
 }

@@ -50,44 +50,37 @@ $app->get('[/]', function (Request $request, Response $response) {
     return $response;
 });
 
-$app->group('/login', function (RouteCollectorProxy $group) {
-    $group->post('[/]', \Verificadora::class . ':Verificar');
-});
+$app->post('/login[/]', \UsuarioController::class . ':VerificarUno')
+    ->add(\Verificadora::class . ':CrearJWT');
 
 $app->group('/usuarios', function (RouteCollectorProxy $group) {
-    $group->get('[/]', \UsuarioController::class . ':TraerTodos');
     $group->get('/{usuario}', \UsuarioController::class . ':TraerUno');
+    $group->get('[/]', \UsuarioController::class . ':TraerTodos');
     $group->post('[/]', \UsuarioController::class . ':CargarUno');
-    $group->put('/{id}', \UsuarioController::class . ':ModificarUno');
     $group->delete('/{id}', \UsuarioController::class . ':BorrarUno');
+    $group->put('/{id}', \UsuarioController::class . ':ModificarUno');
 });
 
+$app->group('/criptomonedas', function (RouteCollectorProxy $group) {
 
-$app->get('/criptomonedas[/]', \CriptomonedaController::class . ':TraerTodos');
-$app->get('/criptomonedas/{id}', \CriptomonedaController::class . ':TraerUno');
+    $group->get('/{id}', \CriptomonedaController::class . ':TraerUno')
+            ->add(\Verificadora::class . ':VerificarRegistro');
 
-$app->get('/criptomonedas/tipo/{tipo}', \CriptomonedaController::class . ':TraerTipo');
+    $group->get('[/]', \CriptomonedaController::class . ':TraerTodos');
+    
+    $group->get('/tipo/{tipo}', \CriptomonedaController::class . ':TraerTipo');
 
-$app->post('/criptomonedas[/]', \CriptomonedaController::class . ':CargarUno');
-$app->put('/criptomonedas/{id}', \CriptomonedaController::class . ':ModificarUno');
-$app->delete('/criptomonedas/{id}', \CriptomonedaController::class . ':BorrarUno');
+    $group->get('/nacionalidad/{nacionalidad}', \CriptomonedaController::class . ':TraerNac');
 
-// Traer validando
-$app->get('/criptomoneda', \CriptomonedaController::class . ':TraerTodos')->add(\MiAutentificador::class . ":Validar");
-// $app->get('/criptomoneda', \CriptomonedaController::class . ':TraerTodos')->add($validar);
-// $app->get('/criptomoneda', \CriptomonedaController::class . ':TraerTodos')->add($validar)->add($admin);
+    $group->post('[/]', \CriptomonedaController::class . ':CargarUno')
+            ->add(\Verificadora::class . ':VerificarAdmin');
 
+    $group->delete('/{id}', \CriptomonedaController::class . ':BorrarUno')
+            ->add(\Verificadora::class . ':VerificarAdmin');
 
-// $app->group('/criptomonedas', function (RouteCollectorProxy $group) {
-//     $group->get('[/]', \CriptomonedaController::class . ':TraerTodos');
-//     $group->get('/{id}', \CriptomonedaController::class . ':TraerUno');
+    $group->put('/{id}', \CriptomonedaController::class . ':ModificarUno')
+            ->add(\Verificadora::class . ':VerificarAdmin');
+});
 
-//     $group->get('/tipo/{tipo}', \CriptomonedaController::class . ':TraerTipo');
-
-//     $group->post('[/]', \CriptomonedaController::class . ':CargarUno');
-//     $group->put('/{id}', \CriptomonedaController::class . ':ModificarUno');
-//     $group->delete('/{id}', \CriptomonedaController::class . ':BorrarUno');
-// });
-// // })->add($mwFotos);
 
 $app->run();
