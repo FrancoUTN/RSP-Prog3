@@ -10,6 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 require_once './middlewares/AutentificadorJWT.php';
 require_once './middlewares/Verificadora.php';
+require_once './middlewares/Generadora.php';
 require_once './controllers/UsuarioController.php';
 require_once './controllers/CriptomonedaController.php';
 require_once './controllers/VentaController.php';
@@ -106,5 +107,9 @@ $app->group('/ventas', function (RouteCollectorProxy $group) {
             ->add(\Verificadora::class . ':VerificarAdmin');
 });
 
+$app->get('/pdf[/]', function (Request $request, Response $response) {
+        $response->getBody()->write("En ruta.");
+        return $response;
+})->add(\Generadora::class . ':GenerarPdf');
 
 $app->run();

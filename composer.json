@@ -4,6 +4,7 @@
         "slim/psr7": "^1.4",
         "firebase/php-jwt": "^4.0",
         "illuminate/database": "^8.31",
-        "vlucas/phpdotenv": "^5.3"
+        "vlucas/phpdotenv": "^5.3",
+        "dompdf/dompdf": "^1.0"
     }
 }
