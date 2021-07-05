@@ -59,14 +59,9 @@ class VentaController implements IApiUsable
 
   public function TraerUno($request, $response, $args)
   {
-    // Buscamos usuario por nombre
     $id = $args['id'];
 
-    // Buscamos por primary key
     $venta = Venta::find($id);
-
-    // Buscamos por attr usuario
-    // $usuario = Usuario::where('usuario', $usr)->first();
 
     $payload = json_encode($venta);
 
@@ -86,17 +81,8 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
-  public function TraerNac($request, $response, $args)
+  public function TraerAlemanas($request, $response, $args)
   {
-    $nacionalidad = $args["nacionalidad"];
-
-    $lista = Venta::where('nacionalidad', '=', $nacionalidad)->get();
-
-    $payload = json_encode($lista);
-
-    $response->getBody()->write($payload);
-
-    return $response->withHeader('Content-Type', 'application/json');
   }
 
   public function ModificarUno($request, $response, $args)
@@ -129,10 +115,8 @@ class VentaController implements IApiUsable
   {
     $id = $args['id'];
 
-    // Buscamos
     $venta = Venta::find($id);
 
-    // Borramos
     $venta->delete();
 
     $payload = json_encode(array("mensaje" => "Venta borrada con exito"));

@@ -12,8 +12,7 @@ class CriptomonedaController implements IApiUsable
     $parametros = $request->getParsedBody();
 
     $nombre = $parametros['nombre'];
-    
-    
+        
     $archivos = $request->getUploadedFiles();
     $destino = "./FotosCriptomonedas/";
     $nombreAnterior = $archivos['foto']->getClientFilename();
@@ -22,14 +21,12 @@ class CriptomonedaController implements IApiUsable
     $pathFoto = $destino . $nombre . "." . $extension[0];
     $archivos['foto']->moveTo($pathFoto);
 
-
     $criptomoneda = new Criptomoneda();
     $criptomoneda->precio = $parametros['precio'];
     $criptomoneda->nombre = $nombre;
     $criptomoneda->foto = $pathFoto;
     $criptomoneda->nacionalidad = $parametros['nacionalidad'];
     $criptomoneda->save();
-
 
     $payload = json_encode(array("mensaje" => "Criptomoneda creada con exito"));
 
@@ -40,14 +37,9 @@ class CriptomonedaController implements IApiUsable
 
   public function TraerUno($request, $response, $args)
   {
-    // Buscamos usuario por nombre
     $id = $args['id'];
 
-    // Buscamos por primary key
     $criptomoneda = Criptomoneda::find($id);
-
-    // Buscamos por attr usuario
-    // $usuario = Usuario::where('usuario', $usr)->first();
 
     $payload = json_encode($criptomoneda);
 
@@ -82,38 +74,70 @@ class CriptomonedaController implements IApiUsable
 
   public function ModificarUno($request, $response, $args)
   {
-    // $parametros = $request->getParsedBody();
+    $parametros = $request->getParsedBody();
 
-    // $usrModificado = $parametros['usuario'];
-    // $usuarioId = $args['id'];
+    $id = $args['id'];
 
-    // // Conseguimos el objeto
-    // $usr = Usuario::where('id', '=', $usuarioId)->first();
+    $criptomoneda = Criptomoneda::find($id);
 
-    // // Si existe
-    // if ($usr !== null) {
-    //   // Seteamos un nuevo usuario
-    //   $usr->usuario = $usrModificado;
-    //   // Guardamos en base de datos
-    //   $usr->save();
-    //   $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-    // } else {
-    //   $payload = json_encode(array("mensaje" => "Usuario no encontrado"));
-    // }
+    if ($criptomoneda !== null)
+    {
+      $archivos = $request->getUploadedFiles();
 
-    // $response->getBody()->write($payload);
-    // return $response
-    //   ->withHeader('Content-Type', 'application/json');
+      if ($archivos != null)
+      {
+        if ($criptomoneda->foto != null)
+        {
+          $oldname = $criptomoneda->foto;
+    
+          $explotado = explode("/", $oldname);
+    
+          $revertido = array_reverse($explotado);
+    
+          $newname = "./BACKUPVENTAS/" . $revertido[0];
+    
+          rename($oldname, $newname);
+        }
+
+        $destino = "./FotosCriptomonedas/";
+        $nombreAnterior = $archivos['foto']->getClientFilename();
+        $extension = explode(".", $nombreAnterior);
+        $extension = array_reverse($extension);
+        $pathFoto = $destino . $parametros['nombre'] . "." . $extension[0];
+        $archivos['foto']->moveTo($pathFoto);
+        
+        $criptomoneda->foto = $pathFoto;
+      }
+
+      if (isset($parametros['precio']))
+        $criptomoneda->precio = $parametros['precio'];
+
+      if (isset($parametros['nombre']))
+        $criptomoneda->nombre = $parametros['nombre'];
+
+      if (isset($parametros['nacionalidad']))
+        $criptomoneda->nacionalidad = $parametros['nacionalidad'];
+
+      $criptomoneda->save();
+
+      $payload = json_encode(array("mensaje" => "Criptomoneda modificada con exito!"));
+    }
+    else
+    {
+      $payload = json_encode(array("mensaje" => "Criptomoneda no encontrada."));
+    }
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
   }
 
   public function BorrarUno($request, $response, $args)
   {
     $id = $args['id'];
 
-    // Buscamos
     $criptomoneda = Criptomoneda::find($id);
 
-    // Borramos
     $criptomoneda->delete();
 
     $payload = json_encode(array("mensaje" => "Criptomoneda borrada con exito"));
