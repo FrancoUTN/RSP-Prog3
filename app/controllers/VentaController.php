@@ -131,6 +131,64 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
+  public function TraerPorPrecioCripto($request, $response, $args)
+  {    
+    $lista = Criptomoneda::all();
+
+    $max = 0;
+
+    foreach ($lista as $criptomoneda)
+    {
+      if ($criptomoneda->precio > $max)
+      {
+        $max = $criptomoneda->precio;
+
+        $criptoMayorImporte = $criptomoneda->id;
+      }
+    }
+
+    $ventas = array();
+
+    $listaVentas = Venta::all();
+
+    foreach ($listaVentas as $venta)
+    {
+      if ($venta->id_criptomoneda == $criptoMayorImporte)
+      {
+        $ventas[] = $venta;        
+      }
+    }
+
+    $payload = json_encode($ventas);
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function TraerPorTransaccionesCripto($request, $response, $args)
+  {     
+    $nacionalidad = $args["nacionalidad"];
+
+    $ventas = array();
+
+    $lista = Venta::all();
+
+    foreach ($lista as $venta)
+    {
+      $criptomoneda = Criptomoneda::find($venta->id_criptomoneda);
+
+      if ($criptomoneda->nacionalidad == $nacionalidad)
+        $ventas[] = $venta;
+    }
+
+    $payload = json_encode($ventas);
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
   public function ModificarUno($request, $response, $args)
   {
     // $parametros = $request->getParsedBody();
