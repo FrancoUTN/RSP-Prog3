@@ -167,52 +167,11 @@ class VentaController implements IApiUsable
   }
 
   public function TraerPorTransaccionesCripto($request, $response, $args)
-  {     
-    $nacionalidad = $args["nacionalidad"];
-
-    $ventas = array();
-
-    $lista = Venta::all();
-
-    foreach ($lista as $venta)
-    {
-      $criptomoneda = Criptomoneda::find($venta->id_criptomoneda);
-
-      if ($criptomoneda->nacionalidad == $nacionalidad)
-        $ventas[] = $venta;
-    }
-
-    $payload = json_encode($ventas);
-
-    $response->getBody()->write($payload);
-
-    return $response->withHeader('Content-Type', 'application/json');
+  {
   }
 
   public function ModificarUno($request, $response, $args)
   {
-    // $parametros = $request->getParsedBody();
-
-    // $usrModificado = $parametros['usuario'];
-    // $usuarioId = $args['id'];
-
-    // // Conseguimos el objeto
-    // $usr = Usuario::where('id', '=', $usuarioId)->first();
-
-    // // Si existe
-    // if ($usr !== null) {
-    //   // Seteamos un nuevo usuario
-    //   $usr->usuario = $usrModificado;
-    //   // Guardamos en base de datos
-    //   $usr->save();
-    //   $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-    // } else {
-    //   $payload = json_encode(array("mensaje" => "Usuario no encontrado"));
-    // }
-
-    // $response->getBody()->write($payload);
-    // return $response
-    //   ->withHeader('Content-Type', 'application/json');
   }
 
   public function BorrarUno($request, $response, $args)

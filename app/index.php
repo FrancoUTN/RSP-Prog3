@@ -99,7 +99,8 @@ $app->group('/ventas', function (RouteCollectorProxy $group) {
             ->add(\Verificadora::class . ':VerificarAdmin');
 
     $group->get('/precio/', \VentaController::class . ':TraerPorPrecioCripto')
-            ->add(\Generadora::class . ':GenerarPdf');
+            ->add(\Generadora::class . ':GenerarPdf')
+            ->add(\Verificadora::class . ':VerificarAdmin');
 
     $group->post('[/]', \VentaController::class . ':CargarUno')
             ->add(\Verificadora::class . ':VerificarRegistro');
